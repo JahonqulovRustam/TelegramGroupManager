@@ -1,0 +1,62 @@
+﻿name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Type check
+        run: npx tsc --noEmit
+      
+      - name: Build
+        run: npm run build
+      
+      - name: Security audit
+        run: npm audit --audit-level=moderate
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 30
+
+  docker-build:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build Docker image
+        run: docker build -t telegram-group-crm:${{ github.sha }} .
+      
+      - name: Tag image
+        run: docker tag telegram-group-crm:${{ github.sha }} telegram-group-crm:latest
+      
+      - name: Docker health check
+        run: |
+          docker run -d -p 3000:3000 --name test-container telegram-group-crm:latest
+          sleep 5
+          docker exec test-container wget --no-verbose --tries=1 http://localhost:3000 || exit 1
+          docker stop test-container
+          docker rm test-container
