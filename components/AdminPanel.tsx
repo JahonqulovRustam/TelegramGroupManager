@@ -222,8 +222,24 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, botToken, setBotToken,
               <div className="bg-slate-800/30 p-10 rounded-[3rem] border border-white/5 shadow-2xl">
                 <Key className="w-12 h-12 text-amber-500 mx-auto mb-6" />
                 <h3 className="font-black text-lg mb-4 text-white uppercase tracking-widest">Bot Token</h3>
-                <p className="text-xs text-slate-500 mb-6 font-mono break-all bg-slate-950 p-4 rounded-2xl border border-white/5">{botToken}</p>
-                <button onClick={() => checkBotStatus()} className="bg-slate-800 hover:bg-indigo-600 text-white px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Qayta tekshirish</button>
+
+                <div className="flex flex-col gap-4 mb-6">
+                  <input
+                    value={botToken}
+                    onChange={(e) => {
+                      const newToken = e.target.value;
+                      setBotToken(newToken);
+                      localStorage.setItem('crm_bot_token', newToken);
+                    }}
+                    placeholder="Bot tokenini kiriting..."
+                    className="bg-slate-950 p-4 rounded-2xl border border-white/5 text-xs text-slate-300 font-mono text-center outline-none focus:border-indigo-500 transition-colors"
+                  />
+                  <p className="text-[9px] text-slate-600 uppercase font-bold">Token localStorage da saqlanadi</p>
+                </div>
+
+                <div className="flex items-center justify-center gap-4">
+                  <button onClick={() => checkBotStatus()} className="bg-slate-800 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all">Qayta tekshirish (Save)</button>
+                </div>
               </div>
 
               <div className="p-8 border border-red-500/20 rounded-[2.5rem] bg-red-500/5">
