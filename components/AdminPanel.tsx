@@ -19,7 +19,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, botToken, setBotToken,
   const [activeTab, setActiveTab] = useState<'USERS' | 'GROUPS' | 'BOT'>('GROUPS');
   const [isResolving, setIsResolving] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  const [botStatus, setBotStatus] = useState<{ok: boolean, name?: string} | null>(null);
+  const [botStatus, setBotStatus] = useState<{ ok: boolean, name?: string } | null>(null);
 
   useEffect(() => {
     loadData();
@@ -28,8 +28,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, botToken, setBotToken,
   }, []);
 
   const checkBotStatus = async () => {
-    if (!botToken) return;
+    console.log("Checking Bot Status...", { botToken }); // DEBUG log
+    if (!botToken) {
+      console.warn("Bot token is missing!");
+      return;
+    }
     const res = await getBotInfo(botToken);
+    console.log("Bot Info Response:", res); // DEBUG log
     if (res && res.ok) {
       setBotStatus({ ok: true, name: res.result.first_name });
     } else {
@@ -53,11 +58,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, botToken, setBotToken,
   const handleAddGroup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (currentUser.role === 'SUPERADMIN') return alert("Superadmin guruh qo'sha olmaydi.");
-    
+
     setFormError(null);
     const form = e.target as HTMLFormElement;
     const inputVal = (form.elements.namedItem('chatInput') as HTMLInputElement).value;
-    
+
     setIsResolving(true);
     try {
       const res = await getChatInfo(botToken, inputVal);
@@ -89,7 +94,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, botToken, setBotToken,
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const role: CRMUser['role'] = currentUser.role === 'SUPERADMIN' ? 'ADMIN' : 'OPERATOR';
-    
+
     const newUser: CRMUser = {
       id: Date.now().toString(),
       fullName: (form.elements.namedItem('fullName') as HTMLInputElement).value,
@@ -158,7 +163,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, botToken, setBotToken,
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 animate-fade-in">
               <div className="bg-slate-800/30 p-8 rounded-3xl border border-white/5 h-fit">
                 <h3 className="font-bold mb-6 flex items-center gap-2 text-indigo-400">
-                  <UserPlus className="w-5 h-5" /> 
+                  <UserPlus className="w-5 h-5" />
                   Qo'shish
                 </h3>
                 <form onSubmit={handleCreateUser} className="space-y-4">
@@ -177,7 +182,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, botToken, setBotToken,
                       <p className="font-bold text-sm text-white">{u.fullName}</p>
                       <p className="text-[10px] text-indigo-400 uppercase font-black">{u.username} • {u.role}</p>
                     </div>
-                    <button onClick={async () => { if(window.confirm("O'chirilsinmi?")) { await deleteUserFromDB(u.id); loadData(); } }} className="p-2 text-slate-600 hover:text-red-500 transition-all"><Trash2 className="w-4 h-4" /></button>
+                    <button onClick={async () => { if (window.confirm("O'chirilsinmi?")) { await deleteUserFromDB(u.id); loadData(); } }} className="p-2 text-slate-600 hover:text-red-500 transition-all"><Trash2 className="w-4 h-4" /></button>
                   </div>
                 ))}
               </div>

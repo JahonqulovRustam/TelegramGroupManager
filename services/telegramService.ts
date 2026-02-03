@@ -3,8 +3,12 @@ import { Message, ChatGroup } from '../types';
 
 export const getBotInfo = async (token: string) => {
   try {
-    const response = await fetch(`/api/telegram/bot${token}/getMe`);
-    return await response.json();
+    const url = `/api/telegram/bot${token}/getMe`;
+    console.log("Fetching Bot Info:", url); // DEBUG log
+    const response = await fetch(url);
+    const json = await response.json();
+    console.log("Fetch Result:", json); // DEBUG log
+    return json;
   } catch (error) {
     console.error("Telegram getMe Error:", error);
     return null;
