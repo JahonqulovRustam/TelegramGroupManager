@@ -3,7 +3,7 @@ import { Message, ChatGroup } from '../types';
 
 export const getBotInfo = async (token: string) => {
   try {
-    const response = await fetch(`https://api.telegram.org/bot${token}/getMe`);
+    const response = await fetch(`/api/telegram/bot${token}/getMe`);
     return await response.json();
   } catch (error) {
     console.error("Telegram getMe Error:", error);
@@ -13,7 +13,7 @@ export const getBotInfo = async (token: string) => {
 
 export const sendTelegramReply = async (token: string, chatId: number, text: string, replyToMessageId?: string) => {
   try {
-    const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    const response = await fetch(`/api/telegram/bot${token}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -33,7 +33,7 @@ export const sendTelegramReply = async (token: string, chatId: number, text: str
 
 export const sendTelegramSticker = async (token: string, chatId: number, stickerUrl: string, replyToMessageId?: string) => {
   try {
-    const response = await fetch(`https://api.telegram.org/bot${token}/sendSticker`, {
+    const response = await fetch(`/api/telegram/bot${token}/sendSticker`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -53,7 +53,7 @@ export const sendTelegramSticker = async (token: string, chatId: number, sticker
 
 export const sendTelegramAnimation = async (token: string, chatId: number, gifUrl: string, caption?: string, replyToMessageId?: string) => {
   try {
-    const response = await fetch(`https://api.telegram.org/bot${token}/sendAnimation`, {
+    const response = await fetch(`/api/telegram/bot${token}/sendAnimation`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -78,7 +78,7 @@ export const getChatInfo = async (token: string, chatIdOrUsername: string | numb
     if (!identifier.startsWith('-') && isNaN(Number(identifier)) && !identifier.startsWith('@')) {
       identifier = '@' + identifier;
     }
-    const response = await fetch(`https://api.telegram.org/bot${token}/getChat?chat_id=${identifier}`);
+    const response = await fetch(`/api/telegram/bot${token}/getChat?chat_id=${identifier}`);
     const data = await response.json();
     return data;
   } catch (error) {
@@ -91,7 +91,7 @@ export const getTelegramUpdates = async (token: string, offset: number) => {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 20000);
-    const response = await fetch(`https://api.telegram.org/bot${token}/getUpdates?offset=${offset}&timeout=15`, {
+    const response = await fetch(`/api/telegram/bot${token}/getUpdates?offset=${offset}&timeout=15`, {
       signal: controller.signal
     });
     clearTimeout(timeoutId);
@@ -128,7 +128,7 @@ export const parseTelegramUpdate = (update: any): { message: Message, chat: Chat
     id: tgMsg.chat.id,
     title: tgMsg.chat.title || tgMsg.chat.first_name || "Noma'lum Chat",
     type: tgMsg.chat.type,
-    memberCount: 0, 
+    memberCount: 0,
     unreadCount: 0,
     lastMessage: text
   };

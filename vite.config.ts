@@ -3,9 +3,6 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  define: {
-    'process.env.GEMINI_API_KEY': JSON.stringify(process.env.GEMINI_API_KEY || '')
-  },
   build: {
     rollupOptions: {
       output: {
@@ -18,5 +15,14 @@ export default defineConfig({
       }
     },
     chunkSizeWarningLimit: 1000
+  },
+  server: {
+    proxy: {
+      '/api/telegram': {
+        target: 'https://api.telegram.org',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/telegram/, '')
+      }
+    }
   }
 });

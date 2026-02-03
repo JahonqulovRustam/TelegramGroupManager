@@ -2,10 +2,13 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Siz taqdim etgan Supabase ulanish ma'lumotlari
-const supabaseUrl = 'https://tgepmjvyvpudwrtmhytu.supabase.co';
-const supabaseAnonKey = 'sb_publishable_v4-S7oO839lo-T_LjiPZ_Q_kBfyk_-z';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // Klientni yaratamiz
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+if (!supabaseUrl || !supabaseAnonKey) {
+    console.warn('Supabase env vars missing');
+}
+export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '');
 
 console.info("✅ Supabase muvaffaqiyatli ulandi.");

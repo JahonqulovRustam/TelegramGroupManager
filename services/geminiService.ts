@@ -20,7 +20,7 @@ export const initAudioContext = async () => {
 
 export const getSmartReply = async (messageText: string): Promise<string> => {
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: `User message: "${messageText}". 
@@ -42,12 +42,12 @@ export const speakText = async (text: string) => {
   try {
     const ctx = await initAudioContext();
     if (!ctx) return;
-    
+
     if (ctx.state === 'suspended') {
       await ctx.resume();
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash-preview-tts",
       contents: [{ parts: [{ text: text.trim() }] }],
@@ -55,7 +55,7 @@ export const speakText = async (text: string) => {
         responseModalities: [Modality.AUDIO],
         speechConfig: {
           voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: 'Kore' }, 
+            prebuiltVoiceConfig: { voiceName: 'Kore' },
           },
         },
       },
@@ -69,17 +69,17 @@ export const speakText = async (text: string) => {
       for (let i = 0; i < len; i++) {
         bytes[i] = binaryString.charCodeAt(i);
       }
-      
+
       const alignedLength = bytes.buffer.byteLength - (bytes.buffer.byteLength % 2);
       if (alignedLength <= 0) return;
-      
+
       const safeBuffer = bytes.buffer.slice(0, alignedLength);
       const dataInt16 = new Int16Array(safeBuffer);
       const frameCount = dataInt16.length;
-      
+
       const buffer = ctx.createBuffer(1, frameCount, 24000);
       const channelData = buffer.getChannelData(0);
-      
+
       for (let i = 0; i < frameCount; i++) {
         channelData[i] = dataInt16[i] / 32768.0;
       }
