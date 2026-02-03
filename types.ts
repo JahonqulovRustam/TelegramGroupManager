@@ -16,8 +16,8 @@ export interface Message {
   isReply?: boolean;
   replyToId?: string;
   type?: MessageType;
-  fileId?: string; 
-  fileUrl?: string; 
+  fileId?: string;
+  fileUrl?: string;
 }
 
 export interface ChatGroup {
@@ -39,8 +39,8 @@ export interface CRMUser {
   username: string;
   password: string;
   fullName: string;
-  role: 'SUPERADMIN' | 'ADMIN' | 'OPERATOR';
-  parentId?: string; // Kim tomonidan yaratilganligi (Adminni Superadmin, Operatorni Admin yaratadi)
+  role: 'SUPERADMIN' | 'ADMIN' | 'DISPATCHER';
+  parentId?: string; // Kim tomonidan yaratilganligi (Adminni Superadmin, Dispetcherni Admin yaratadi)
 }
 
 export type Theme = 'dark' | 'light';

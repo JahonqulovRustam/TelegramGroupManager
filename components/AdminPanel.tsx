@@ -93,7 +93,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, botToken, setBotToken,
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
-    const role: CRMUser['role'] = currentUser.role === 'SUPERADMIN' ? 'ADMIN' : 'OPERATOR';
+    const role: CRMUser['role'] = currentUser.role === 'SUPERADMIN' ? 'ADMIN' : 'DISPATCHER';
 
     const newUser: CRMUser = {
       id: Date.now().toString(),
@@ -138,7 +138,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onClose, botToken, setBotToken,
               <button onClick={() => setActiveTab('GROUPS')} className={`px-8 py-4 rounded-2xl font-bold transition-all ${activeTab === 'GROUPS' ? 'bg-indigo-600 text-white shadow-lg' : 'bg-slate-800 text-slate-400'}`}>Guruhlar</button>
             )}
             <button onClick={() => setActiveTab('USERS')} className={`px-8 py-4 rounded-2xl font-bold transition-all ${activeTab === 'USERS' ? 'bg-indigo-600 text-white shadow-lg' : 'bg-slate-800 text-slate-400'}`}>
-              {currentUser.role === 'SUPERADMIN' ? 'Adminlar' : 'Xodimlar'}
+              {currentUser.role === 'SUPERADMIN' ? 'Adminlar' : 'Dispetcherlar'}
             </button>
             {currentUser.role === 'SUPERADMIN' && (
               <button onClick={() => setActiveTab('BOT')} className={`px-8 py-4 rounded-2xl font-bold transition-all ${activeTab === 'BOT' ? 'bg-indigo-600 text-white shadow-lg' : 'bg-slate-800 text-slate-400'}`}>Tizim Sozlamalari</button>

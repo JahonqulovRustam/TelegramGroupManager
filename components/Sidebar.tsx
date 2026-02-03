@@ -14,19 +14,19 @@ interface SidebarProps {
   onOpenGlobalSearch: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ 
-  groups, 
-  activeChatId, 
-  onSelectGroup, 
-  onUpdateGroupSettings, 
-  isAdmin, 
-  onOpenAdmin, 
+const Sidebar: React.FC<SidebarProps> = ({
+  groups,
+  activeChatId,
+  onSelectGroup,
+  onUpdateGroupSettings,
+  isAdmin,
+  onOpenAdmin,
   onOpenStats,
-  onOpenGlobalSearch 
+  onOpenGlobalSearch
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredGroups = groups.filter(g => 
+  const filteredGroups = groups.filter(g =>
     g.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -57,14 +57,14 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button 
+          <button
             onClick={onOpenGlobalSearch}
             className="p-2 bg-slate-800/50 rounded-lg hover:bg-indigo-600 transition-all text-slate-400 hover:text-white"
             title="Xabarlarni qidirish"
           >
             <Search className="w-4 h-4" />
           </button>
-          <button 
+          <button
             onClick={onOpenStats}
             className="p-2 bg-slate-800/50 rounded-lg hover:bg-slate-700 transition-all text-slate-400 hover:text-white"
             title="Statistika"
@@ -72,7 +72,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             <BarChart2 className="w-4 h-4" />
           </button>
           {isAdmin && (
-            <button 
+            <button
               onClick={onOpenAdmin}
               className="p-2 bg-slate-800/50 rounded-lg hover:bg-slate-700 transition-all text-slate-400 hover:text-white"
               title="Sozlamalar"
@@ -85,13 +85,12 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       <div className="px-4 py-4 space-y-4">
         {/* Saved Messages Section */}
-        <button 
+        <button
           onClick={() => onSelectGroup(0)}
-          className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all border ${
-            activeChatId === 0 
-              ? 'bg-amber-500 shadow-xl shadow-amber-500/20 border-amber-400 text-white' 
-              : 'bg-slate-800/30 border-white/5 text-slate-400 hover:bg-slate-800'
-          }`}
+          className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all border ${activeChatId === 0
+            ? 'bg-amber-500 shadow-xl shadow-amber-500/20 border-amber-400 text-white'
+            : 'bg-slate-800/30 border-white/5 text-slate-400 hover:bg-slate-800'
+            }`}
         >
           <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${activeChatId === 0 ? 'bg-white text-amber-500' : 'bg-slate-800 text-amber-500'}`}>
             <Bookmark className="w-5 h-5" />
@@ -104,10 +103,10 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
-          <input 
+          <input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Guruhlarni qidirish..." 
+            placeholder="Guruhlarni qidirish..."
             className="w-full bg-slate-800/50 border border-white/5 rounded-xl py-2.5 pl-10 pr-4 text-xs text-white outline-none focus:border-indigo-500 transition-all"
           />
         </div>
@@ -115,18 +114,17 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
         <div className="flex items-center justify-between px-3 mb-2">
-           <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Guruhlar</span>
-           <span className="bg-slate-800 px-2 py-0.5 rounded-md text-[10px] font-bold text-slate-400">{filteredGroups.length}</span>
+          <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Guruhlar</span>
+          <span className="bg-slate-800 px-2 py-0.5 rounded-md text-[10px] font-bold text-slate-400">{filteredGroups.length}</span>
         </div>
-        
+
         {filteredGroups.map((group) => (
-          <div 
+          <div
             key={group.id}
-            className={`relative rounded-2xl transition-all duration-300 border group ${
-              activeChatId === group.id 
-                ? 'bg-indigo-600 shadow-xl shadow-indigo-600/20 border-indigo-500' 
-                : 'hover:bg-slate-800/50 border-transparent'
-            }`}
+            className={`relative rounded-2xl transition-all duration-300 border group ${activeChatId === group.id
+              ? 'bg-indigo-600 shadow-xl shadow-indigo-600/20 border-indigo-500'
+              : 'hover:bg-slate-800/50 border-transparent'
+              }`}
           >
             <button onClick={() => onSelectGroup(group.id)} className="w-full text-left p-4 flex items-center gap-3">
               <div className={`w-10 h-10 rounded-xl shrink-0 flex items-center justify-center font-black text-sm shadow-inner ${activeChatId === group.id ? 'bg-white text-indigo-600' : getGroupColorClass(group.id)}`}>
@@ -144,13 +142,13 @@ const Sidebar: React.FC<SidebarProps> = ({
             </button>
 
             <div className="absolute top-1/2 -translate-y-1/2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-              <button 
+              <button
                 onClick={(e) => { e.stopPropagation(); onUpdateGroupSettings(group.id, { announceGroup: !group.announceGroup }); }}
                 className={`p-1 rounded-md border transition-all ${group.announceGroup ? 'bg-indigo-500 border-indigo-400 text-white' : 'bg-slate-800 border-white/5 text-slate-600'}`}
               >
                 <Users className="w-3 h-3" />
               </button>
-              <button 
+              <button
                 onClick={(e) => { e.stopPropagation(); onUpdateGroupSettings(group.id, { announceSender: !group.announceSender }); }}
                 className={`p-1 rounded-md border transition-all ${group.announceSender ? 'bg-amber-500 border-amber-400 text-white' : 'bg-slate-800 border-white/5 text-slate-600'}`}
               >
@@ -168,11 +166,14 @@ const Sidebar: React.FC<SidebarProps> = ({
         )}
       </div>
 
-      <div className="p-4 bg-slate-900/80 border-t border-slate-800">
+      <div className="p-4 bg-slate-900/80 border-t border-slate-800 flex flex-col gap-2">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-lg shadow-emerald-500/50"></div>
           <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Monitoring Faol</span>
         </div>
+        <a href="https://t.me/JH_Rustam" target="_blank" rel="noopener noreferrer" className="text-[8px] text-slate-600 hover:text-indigo-400 font-bold uppercase tracking-wider text-center pt-2 transition-colors border-t border-white/5 mt-1">
+          Created by Jahonqulov Rustam
+        </a>
       </div>
     </div>
   );

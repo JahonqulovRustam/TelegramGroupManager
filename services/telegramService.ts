@@ -78,7 +78,14 @@ export const sendTelegramAnimation = async (token: string, chatId: number, gifUr
 
 export const getChatInfo = async (token: string, chatIdOrUsername: string | number) => {
   try {
-    let identifier = chatIdOrUsername.toString();
+    let identifier = chatIdOrUsername.toString().trim();
+
+    // Handle t.me links (e.g., https://t.me/username or t.me/username)
+    const urlMatch = identifier.match(/(?:t\.me\/|telegram\.me\/)(@?[\w\d_]+)/i);
+    if (urlMatch && urlMatch[1]) {
+      identifier = urlMatch[1];
+    }
+
     if (!identifier.startsWith('-') && isNaN(Number(identifier)) && !identifier.startsWith('@')) {
       identifier = '@' + identifier;
     }

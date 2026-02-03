@@ -39,6 +39,27 @@ export const getSmartReply = async (messageText: string): Promise<string> => {
 export const speakText = async (text: string) => {
   if (!text || text.trim().length === 0) return;
 
+  // 1. Try Native Browser TTS first (Faster, Free, More Reliable for Notifications)
+  try {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel(); // Stop previous
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'uz-UZ'; // Uzbekistan locale, if available, otherwise it might fallback
+      // Fallback logic for voice selection if needed
+      const voices = window.speechSynthesis.getVoices();
+      const uzVoice = voices.find(v => v.lang.includes('uz') || v.lang.includes('UZ'));
+      if (uzVoice) utterance.voice = uzVoice;
+
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      window.speechSynthesis.speak(utterance);
+      return; // If native works, return. If you prefer Gemini, remove this early return.
+    }
+  } catch (e) {
+    console.error("Native TTS failed, trying Gemini...", e);
+  }
+
+  // 2. Fallback to Gemini (Original Logic)
   try {
     const ctx = await initAudioContext();
     if (!ctx) return;

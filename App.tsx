@@ -69,7 +69,7 @@ const App: React.FC = () => {
     theme: (localStorage.getItem('crm_theme') as Theme) || 'dark',
     currentPath: 'CRM'
   });
-  const [notifications, setNotifications] = useState<{id: string, text: string}[]>([]);
+  const [notifications, setNotifications] = useState<{ id: string, text: string }[]>([]);
   const processedIdsRef = useRef(new Set<string>());
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -117,7 +117,7 @@ const App: React.FC = () => {
           }
           setLastUpdateId(maxId);
         }
-      } catch (err) {}
+      } catch (err) { }
       if (active) setTimeout(poll, 3000);
     };
     poll();
@@ -131,7 +131,7 @@ const App: React.FC = () => {
     await saveMessage({ ...msg, isReply: isBotSelf });
     setState(prev => {
       const existingGroup = prev.groups.find(g => g.id === chat.id);
-      let updatedGroup: ChatGroup = existingGroup 
+      let updatedGroup: ChatGroup = existingGroup
         ? { ...existingGroup, lastMessage: msg.text, lastMessageTimestamp: msg.timestamp, unreadCount: (prev.activeChatId === chat.id || isBotSelf) ? 0 : (existingGroup.unreadCount || 0) + 1 }
         : { ...chat, isActive: true, unreadCount: 1, announceGroup: true, announceSender: true, readContent: false, lastMessageTimestamp: msg.timestamp };
       saveGroup(updatedGroup);
@@ -145,7 +145,7 @@ const App: React.FC = () => {
           else if (settings.announceGroup) speech = `${settings.title} guruhida yangi xabar`;
           if (settings.readContent && msg.text) speech += `. Matn: ${msg.text}`;
           if (speech) speakText(speech);
-        } else audioRef.current?.play().catch(() => {});
+        } else audioRef.current?.play().catch(() => { });
         if (prev.activeChatId !== chat.id) addNotification(`${msg.from.first_name}: ${msg.text.substring(0, 30)}`);
       }
       return { ...prev, groups: sorted, messages: [...prev.messages, { ...msg, isReply: isBotSelf }] };
@@ -165,7 +165,7 @@ const App: React.FC = () => {
   };
 
   const selectGroup = (id: number) => {
-    setState(prev => ({ ...prev, activeChatId: id, groups: prev.groups.map(g => g.id === id ? {...g, unreadCount: 0} : g) }));
+    setState(prev => ({ ...prev, activeChatId: id, groups: prev.groups.map(g => g.id === id ? { ...g, unreadCount: 0 } : g) }));
     const group = state.groups.find(g => g.id === id);
     if (group && group.id !== 0) saveGroup({ ...group, unreadCount: 0 });
   };
@@ -190,13 +190,13 @@ const App: React.FC = () => {
       <main className="flex-1 flex flex-col relative overflow-hidden">
         {state.currentPath === 'CRM' && (
           <div className="flex h-full w-full overflow-hidden">
-            <Sidebar 
-              groups={state.groups.filter(g => g.id !== 0)} 
-              activeChatId={state.activeChatId} 
+            <Sidebar
+              groups={state.groups.filter(g => g.id !== 0)}
+              activeChatId={state.activeChatId}
               onSelectGroup={selectGroup}
               onUpdateGroupSettings={(id, s) => {
                 setState(prev => {
-                  const updated = prev.groups.map(g => g.id === id ? {...g, ...s} : g);
+                  const updated = prev.groups.map(g => g.id === id ? { ...g, ...s } : g);
                   const group = updated.find(g => g.id === id);
                   if (group && group.id !== 0) saveGroup(group);
                   return { ...prev, groups: updated };
@@ -207,9 +207,9 @@ const App: React.FC = () => {
               onOpenStats={() => setShowStatsPanel(true)}
               onOpenGlobalSearch={() => setShowGlobalSearch(true)}
             />
-            <ChatWindow 
-              activeGroup={state.groups.find(g => g.id === state.activeChatId) || null} 
-              messages={state.messages.filter(m => m.chatId === state.activeChatId)} 
+            <ChatWindow
+              activeGroup={state.groups.find(g => g.id === state.activeChatId) || null}
+              messages={state.messages.filter(m => m.chatId === state.activeChatId)}
               availableGroups={state.groups.filter(g => g.id !== 0)}
               onBroadcast={async (t, ids) => {
                 for (const gid of ids) {
@@ -244,7 +244,7 @@ const App: React.FC = () => {
                   processedIdsRef.current.add(m.id); await saveMessage(m);
                   setState(p => ({ ...p, messages: [...p.messages, m] }));
                 }
-              }} 
+              }}
             />
           </div>
         )}
@@ -257,7 +257,7 @@ const App: React.FC = () => {
         }} />}
         {showStatsPanel && <StatsPanel onClose={() => setShowStatsPanel(false)} groups={state.groups} messages={state.messages} />}
         {showGlobalSearch && <GlobalSearch onClose={() => setShowGlobalSearch(false)} messages={state.messages} groups={state.groups} onSelectResult={selectGroup} />}
-        
+
         <div className="fixed top-4 right-6 z-40 flex items-center gap-3">
           {!supabase && (
             <div className="bg-amber-600/90 backdrop-blur-md px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-xl border border-amber-500/20 group">
